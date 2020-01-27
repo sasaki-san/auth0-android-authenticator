@@ -1,0 +1,3 @@
+<resources>
+    <string name="guardian_url">https://lhr.guardian.auth0.com</string>
+</resources>

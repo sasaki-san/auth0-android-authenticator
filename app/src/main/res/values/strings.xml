@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Auth0 Authenticator App</string>
+    <string name="title_main">Auth0 Authenticator</string>
+    <string name="title_enroll">Enroll account</string>
+    <string name="title_notification">Authentication request</string>
+    <string name="progress_title_please_wait">Please wait</string>
+    <string name="progress_message_unenroll">Trying to unenroll your account…</string>
+    <string name="progress_message_reject">Trying to reject the authentication request…</string>
+    <string name="progress_message_allow">Trying to allow the authentication request…</string>
+    <string name="progress_message_enroll">Trying to enroll your account…</string>
+    <string name="alert_title_error">Error</string>
+    <string name="alert_message_fcm_error">Could not obtain FCM token.\nCheck your FCM configuration and internet connection and try again later</string>
+    <string name="guardian_notification_title">Push notification received</string>
+    <string name="guardian_notification_text">Click to see details</string>
+    <string name="com_auth0_client_id">fPPQyx1vG5VIDutZ4gdqF7pOOt1N7Gt4</string>
+    <string name="com_auth0_domain">lhr.auth0.com</string>
+</resources>
