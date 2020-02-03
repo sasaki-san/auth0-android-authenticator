@@ -136,47 +136,32 @@ public class MainActivity extends AppCompatActivity implements FcmUtils.FcmToken
         loadingView = findViewById(R.id.loadingLayout);
         enrollView = findViewById(R.id.enrollLayout);
         accountView = findViewById(R.id.accountLayout);
-        deviceNameText = (TextView) findViewById(R.id.deviceNameText);
-        fcmTokenText = (TextView) findViewById(R.id.fcmTokenText);
-        userText = (TextView) findViewById(R.id.userText);
-        otpView = (TOTPCodeView) findViewById(R.id.otpView);
+        deviceNameText = findViewById(R.id.deviceNameText);
+        fcmTokenText = findViewById(R.id.fcmTokenText);
+        userText = findViewById(R.id.userText);
+        otpView = findViewById(R.id.otpView);
 
-        deviceNameText.setText(Build.MODEL);
+        deviceNameText.setText(Build.ID);
 
-        Button enrollButton = (Button) findViewById(R.id.enrollButton);
-        assert enrollButton != null;
-        enrollButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onEnrollRequested();
-            }
-        });
+        Button enrollButton = findViewById(R.id.enrollButton);
+        enrollButton.setOnClickListener(v -> onEnrollRequested());
 
-        Button unenrollButton = (Button) findViewById(R.id.unenrollButton);
-        assert unenrollButton != null;
-        unenrollButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onUnEnrollRequested();
-            }
-        });
+        Button unenrollButton = findViewById(R.id.unenrollButton);
+        unenrollButton.setOnClickListener(v -> onUnEnrollRequested());
     }
 
     private void updateUI() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadingView.setVisibility(fcmToken != null ? View.GONE : View.VISIBLE);
-                if (enrollment == null) {
-                    fcmTokenText.setText(fcmToken);
-                    accountView.setVisibility(View.GONE);
-                    enrollView.setVisibility(fcmToken != null ? View.VISIBLE : View.GONE);
-                } else {
-                    userText.setText(enrollment.getUserId());
-                    otpView.setEnrollment(enrollment);
-                    enrollView.setVisibility(View.GONE);
-                    accountView.setVisibility(fcmToken != null ? View.VISIBLE : View.GONE);
-                }
+        runOnUiThread(() -> {
+            loadingView.setVisibility(fcmToken != null ? View.GONE : View.VISIBLE);
+            if (enrollment == null) {
+                fcmTokenText.setText(fcmToken);
+                accountView.setVisibility(View.GONE);
+                enrollView.setVisibility(fcmToken != null ? View.VISIBLE : View.GONE);
+            } else {
+                userText.setText(enrollment.getUserId());
+                otpView.setEnrollment(enrollment);
+                enrollView.setVisibility(View.GONE);
+                accountView.setVisibility(fcmToken != null ? View.VISIBLE : View.GONE);
             }
         });
     }

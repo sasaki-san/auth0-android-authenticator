@@ -24,19 +24,13 @@ package com.auth0.guardian.authenticator;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-
-import com.google.gson.Gson;
 import android.widget.Toast;
 
 import com.auth0.android.Auth0;
@@ -48,7 +42,7 @@ import com.auth0.android.guardian.sdk.networking.Callback;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
-import com.auth0.guardian.authenticator.scanner.CaptureView;
+import com.google.gson.Gson;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -56,8 +50,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -66,10 +58,8 @@ public class EnrollActivity extends AppCompatActivity {
 
     private static final String TAG = EnrollActivity.class.getName();
 
-    private static final String DEVICE_NAME = "com.auth0.guardian.sample.EnrollActivity.DEVICE_NAME";
-    private static final String FCM_TOKEN = "com.auth0.guardian.sample.EnrollActivity.FCM_TOKEN";
-
-    private static final int REQUEST_CAMERA = 55;
+    private static final String DEVICE_NAME = "com.auth0.guardian.authenticator.EnrollActivity.DEVICE_NAME";
+    private static final String FCM_TOKEN = "com.auth0.guardian.authenticator.EnrollActivity.FCM_TOKEN";
 
     private Auth0 auth0;
 
@@ -77,10 +67,6 @@ public class EnrollActivity extends AppCompatActivity {
     private String deviceName;
     private String fcmToken;
     private String mfaToken;
-
-    private View permissionLayout;
-    private View scannerLayout;
-    private CaptureView scanner;
 
     static Intent getStartIntent(@NonNull Context context,
                                  @NonNull String deviceName,
@@ -97,59 +83,15 @@ public class EnrollActivity extends AppCompatActivity {
         auth0 = new Auth0(this);
         auth0.setOIDCConformant(true);
 
-        setContentView(R.layout.activity_enroll);
+//        setContentView(R.layout.activity_enroll);
 
         setupGuardian();
         login();
-//        setupUI();
-//        checkCameraPermission();
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        scanner.start(this);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        resumeScanning();
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        scanner.pause();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        scanner.stop();
-//    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA) {
-            // Received permission result for camera permission.
-            Log.i(TAG, "Received response for Camera permission request.");
 
-            // Check if the only required permission has been granted
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Camera permission has been granted, preview can be displayed
-                Log.i(TAG, "CAMERA permission has now been granted. Showing preview.");
-                // Set up QR code scanning
-                showScanView();
-            } else {
-                Log.i(TAG, "CAMERA permission was NOT granted.");
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
+
 
     public void enrollWithUri(String enrollmentData) {
         try {
@@ -168,7 +110,7 @@ public class EnrollActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onFailure(Throwable exception) {
-                                    resumeScanning();
+                                    Log.d(TAG, "enroll Failed");
                                 }
                             }));
         } catch (IllegalArgumentException exception) {
@@ -203,20 +145,21 @@ public class EnrollActivity extends AppCompatActivity {
                 });
     }
 
-    class Asok {
+    class EnrollmentResponseModel {
         protected String barcode_uri;
-        public Asok(String barcode_uri){
+        public EnrollmentResponseModel(String barcode_uri){
             this.barcode_uri = barcode_uri;
         }
     }
+
     private void associate() {
        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-        RequestBody payload = RequestBody.create(JSON,"{\"authenticator_types\": [\"oob\"], \"oob_channels\": [\"auth0\"] }");
+        RequestBody payload = RequestBody.create(JSON,getString(R.string.Associate_Push_Payload));
 
         final Request.Builder reqBuilder = new Request.Builder()
                 .post(payload)
-                .url("https://lhr.auth0.com/mfa/associate");
+                .url(getString(R.string.Auth0_Associate));
         if (mfaToken!=null) {
             reqBuilder.addHeader("Authorization", "Bearer " + mfaToken);
         }
@@ -226,12 +169,7 @@ public class EnrollActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new com.squareup.okhttp.Callback() {
             @Override
             public void onFailure(Request request, final IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(EnrollActivity.this, "An error occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(EnrollActivity.this, "An error occurred" + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -239,22 +177,9 @@ public class EnrollActivity extends AppCompatActivity {
 
                 String body = response.body().string();
                 Gson gson = new Gson();
-                Asok asok = gson.fromJson(body,Asok.class);
+                EnrollmentResponseModel enrollmentResponseModel = gson.fromJson(body, EnrollmentResponseModel.class);
 
-
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        enrollWithUri(asok.barcode_uri);
-
-//                        if (response.isSuccessful()) {
-//                            Toast.makeText(EnrollActivity.this, "API call success!", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(EnrollActivity.this, "API call failed.", Toast.LENGTH_SHORT).show();
-//                        }
-                    }
-                });
+                runOnUiThread(() -> enrollWithUri(enrollmentResponseModel.barcode_uri));
             }
         });
 
@@ -276,66 +201,6 @@ public class EnrollActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void setupUI() {
-//        permissionLayout = findViewById(R.id.permissionLayout);
-//        scannerLayout = findViewById(R.id.scannerLayout);
-//        scanner = (CaptureView) findViewById(R.id.scanner);
-//
-//        Button requestPermissionButton = (Button) findViewById(R.id.requestPermissionButton);
-//        assert requestPermissionButton != null;
-//        requestPermissionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                requestCameraPermission();
-//            }
-//        });
-    }
-
-    private void checkCameraPermission() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Camera permission has not been granted
-            showCameraPermissionUnavailable();
-            tryRequestCameraPermissionDirectly();
-        } else {
-            // Camera permissions is already available, show the camera preview.
-            Log.i(TAG, "CAMERA permission has already been granted. Displaying camera preview.");
-
-            // Set up QR code scanning
-            showScanView();
-        }
-    }
-
-    private void tryRequestCameraPermissionDirectly() {
-        Log.i(TAG, "CAMERA permission has NOT been granted. Requesting permission.");
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                android.Manifest.permission.CAMERA)) {
-            // The user has previously denied the permission
-        } else {
-            // Camera permission has not been granted yet. Request it directly.
-            requestCameraPermission();
-        }
-    }
-
-    private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.CAMERA},
-                REQUEST_CAMERA);
-    }
-
-    private void showCameraPermissionUnavailable() {
-        scannerLayout.setVisibility(View.GONE);
-        permissionLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void showScanView() {
-        permissionLayout.setVisibility(View.GONE);
-        scannerLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void resumeScanning() {
-        scanner.resume();
-    }
 
     private void onEnrollSuccess(Enrollment enrollment) {
         Intent data = new Intent();
@@ -346,30 +211,14 @@ public class EnrollActivity extends AppCompatActivity {
     }
 
     private void onEnrollFailure(final Throwable exception) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new AlertDialog.Builder(EnrollActivity.this)
-                        .setTitle(R.string.alert_title_error)
-                        .setMessage(exception.getMessage())
-                        .setPositiveButton(
-                                android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                })
-                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                resumeScanning();
-                            }
-                        })
-                        .create()
-                        .show();
-            }
-        });
+        runOnUiThread(() -> new AlertDialog.Builder(EnrollActivity.this)
+                .setTitle(R.string.alert_title_error)
+                .setMessage(exception.getMessage())
+                .setPositiveButton(
+                        android.R.string.ok,
+                        (dialog, which) -> dialog.dismiss())
+                .create()
+                .show());
     }
 
     private KeyPair generateKeyPair() {
