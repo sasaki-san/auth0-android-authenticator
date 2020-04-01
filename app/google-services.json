@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:504080018963:android:8bc75ca16e98f6c54e19e6",
+        "android_client_info": {
+          "package_name": "com.auth0.guardian.authenticator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504080018963-gj16mvehje0a2rkhve8digh6fqsv0gfa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOapvEGH4zEXdvFeztokF4Z6xd2XKjpf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504080018963-gj16mvehje0a2rkhve8digh6fqsv0gfa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:504080018963:android:196d9762bf03a68b4e19e6",
         "android_client_info": {
           "package_name": "com.auth0.guardian.sample"

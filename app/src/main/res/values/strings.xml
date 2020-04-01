@@ -14,4 +14,6 @@
     <string name="guardian_notification_text">Click to see details</string>
     <string name="com_auth0_client_id">fPPQyx1vG5VIDutZ4gdqF7pOOt1N7Gt4</string>
     <string name="com_auth0_domain">lhr.auth0.com</string>
+    <string name="Auth0_Associate">https://lhr.auth0.com/mfa/associate</string>
+    <string name="Associate_Push_Payload">{\"authenticator_types\": [\"oob\"], \"oob_channels\": [\"auth0\"] }</string>
 </resources>

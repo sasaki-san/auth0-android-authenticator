@@ -57,7 +57,6 @@
                     android:layout_height="wrap_content"
                     android:text="Device name"
                     android:theme="@style/Label.Header" />
-
                 <TextView
                     android:id="@+id/deviceNameText"
                     android:layout_width="match_parent"
@@ -67,11 +66,11 @@
                     android:theme="@style/Label"
                     tools:text="Nexus 5X" />
 
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="FCM token"-->
-                    <!--android:theme="@style/Label.Header" />-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="FCM token"
+                    android:theme="@style/Label.Header" />
 
                 <TextView
                     android:id="@+id/fcmTokenText"
@@ -80,7 +79,6 @@
                     android:layout_marginBottom="12dp"
                     android:hint="Not available"
                     android:textIsSelectable="true"
-                    android:visibility="invisible"
                     android:theme="@style/Label" />
 
             </LinearLayout>
@@ -118,13 +116,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:theme="@style/Label"
-                    tools:text="nicolas.ulrich@auth0.com" />
+                    tools:text="xxxx.dxxx@auth0.com" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Code"
-                    android:theme="@style/Label.Header" />
+                    android:theme="@style/Label.Header" android:visibility="invisible" />
 
                 <com.auth0.guardian.authenticator.views.TOTPCodeView
                     android:id="@+id/otpView"
@@ -133,7 +131,7 @@
                     android:textSize="48sp"
                     app:aboutToExpireColor="#FF0000"
                     app:aboutToExpireTimeMs="5000"
-                    tools:text="123456" />
+                    tools:text="123456" android:visibility="invisible"/>
 
             </LinearLayout>
 

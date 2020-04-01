@@ -83,7 +83,6 @@ public class EnrollActivity extends AppCompatActivity {
         auth0 = new Auth0(this);
         auth0.setOIDCConformant(true);
 
-//        setContentView(R.layout.activity_enroll);
 
         setupGuardian();
         login();

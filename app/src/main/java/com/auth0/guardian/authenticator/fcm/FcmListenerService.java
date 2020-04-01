@@ -51,6 +51,7 @@ public class FcmListenerService extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(RemoteMessage message) {
+        Log.d(TAG, String.format("Received FCM message from: %s with data: %s", message.getFrom(), message.getData()));
         if (BuildConfig.DEBUG) {
             Log.d(TAG, String.format("Received FCM message from: %s with data: %s", message.getFrom(), message.getData()));
         }

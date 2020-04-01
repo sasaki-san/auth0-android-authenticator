@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.auth0.guardian.sample"
+        applicationId "com.auth0.guardian.authenticator"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
