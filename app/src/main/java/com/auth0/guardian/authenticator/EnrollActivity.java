@@ -22,24 +22,24 @@
 
 package com.auth0.guardian.authenticator;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.callback.AuthenticationCallback;
 import com.auth0.android.guardian.sdk.CurrentDevice;
 import com.auth0.android.guardian.sdk.Enrollment;
 import com.auth0.android.guardian.sdk.Guardian;
 import com.auth0.android.guardian.sdk.networking.Callback;
-import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 import com.google.gson.Gson;
@@ -81,16 +81,10 @@ public class EnrollActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth0 = new Auth0(this);
-        auth0.setOIDCConformant(true);
-
-
+        // auth0.setOIDCConformant(true);
         setupGuardian();
         login();
     }
-
-
-
-
 
     public void enrollWithUri(String enrollmentData) {
         try {
@@ -121,27 +115,39 @@ public class EnrollActivity extends AppCompatActivity {
     private void login() {
         WebAuthProvider.login(auth0)
                 .withScheme("demo")
-                .withAudience("https://lhr.auth0.com/mfa/")
+                .withAudience(getString(R.string.Auth0_Mfa_Audience))
                 .withScope("openid profile enroll")
-                .start(EnrollActivity.this, new AuthCallback() {
+                .start(EnrollActivity.this, new AuthenticationCallback<Credentials>() {
                     @Override
-                    public void onFailure(@NonNull Dialog dialog) {
+                    public void onSuccess(Credentials credentials) {
+                        mfaToken = credentials.getAccessToken();
+                        associate();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull AuthenticationException e) {
                         Log.e(TAG, "login throw an exception");
                     }
-
-                    @Override
-                    public void onFailure(AuthenticationException exception) {
-                        Log.e(TAG, "login throw an exception", exception);
-                    }
-
-                    @Override
-                    public void onSuccess(@NonNull Credentials credentials) {
-                        mfaToken = credentials.getAccessToken();
-
-                       associate();
-
-                    }
                 });
+//                .start(EnrollActivity.this, new AuthCallback() {
+//                    @Override
+//                    public void onFailure(@NonNull Dialog dialog) {
+//                        Log.e(TAG, "login throw an exception");
+//                    }
+//
+//                    @Override
+//                    public void onFailure(AuthenticationException exception) {
+//                        Log.e(TAG, "login throw an exception", exception);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(@NonNull Credentials credentials) {
+//                        mfaToken = credentials.getAccessToken();
+//
+//                       associate();
+//
+//                    }
+//                });
     }
 
     class EnrollmentResponseModel {

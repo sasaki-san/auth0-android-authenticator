@@ -25,13 +25,14 @@ package com.auth0.guardian.authenticator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 
 import com.auth0.android.guardian.sdk.networking.Callback;
 

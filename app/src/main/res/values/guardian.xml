@@ -1,3 +1,4 @@
 <resources>
-    <string name="guardian_url">https://lhr.guardian.auth0.com</string>
+    <string name="guardian_url">https://yusasaki.guardian.jp.auth0.com/</string>
+<!--    <string name="guardian_url">https://auth.yusasaki0.app/guardian</string>-->
 </resources>

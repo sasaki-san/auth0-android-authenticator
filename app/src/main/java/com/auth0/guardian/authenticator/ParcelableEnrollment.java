@@ -24,8 +24,9 @@ package com.auth0.guardian.authenticator;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.util.Base64;
+
+import androidx.annotation.NonNull;
 
 import com.auth0.android.guardian.sdk.Enrollment;
 import com.google.gson.Gson;
